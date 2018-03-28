@@ -1,0 +1,13 @@
+/*Taken from https://serverless-stack.com/chapters/create-a-login-page.html*/
+  .login {
+    padding: 60px 0;
+  }
+
+  .login form {
+    margin: 0 auto;
+    max-width: 320px;
+  }
+
+  .login-text {
+    width: 50px;
+  }

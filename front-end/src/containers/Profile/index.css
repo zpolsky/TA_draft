@@ -1,0 +1,11 @@
+
+.center-div {
+  text-align: center;
+}
+
+.block-div {
+  width: 25%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
