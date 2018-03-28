@@ -5,6 +5,7 @@ import './index.css';
 
 import getCourses from '../../api/getCourses';
 
+import LinkButton from '../../components/LinkButton';
 import AddUserModal from '../../components/AddUserModal';
 
 class Profile extends Component {
@@ -12,7 +13,8 @@ class Profile extends Component {
     super(props);
     this.state = {
       courses: [],
-      isFetching: true
+      isFetching: true,
+      surveyComplete: false
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -89,8 +91,13 @@ class Profile extends Component {
         <h1>Welcome {username}!</h1>
         <h3>Classes:</h3>
         {courseList}
+        {!this.state.surveyComplete &&
+          // Fragment needed to return button with break
+          <React.Fragment>
+            <LinkButton to="/ta-survey" btnText="Survey"/><br/>
+          </React.Fragment>
+        }
         <Button bsStyle="primary" onClick={() => alert('Submit missing pressed')}>Submit Missing Form</Button><br/>
-        <Button bsStyle="primary" onClick={() => alert('Add course pressed')}>Add Course</Button><br/>
         <Button bsStyle="primary" onClick={() => this.modal.handleShow()}>Add TA</Button>
         {modal}
       </div>

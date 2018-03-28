@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 
 const FieldGroup = ({id, label, validationState, ...props}) => {
