@@ -1,4 +1,8 @@
 .form-body {
   display: inline-block;
-  width: 50%;
+  width: 75%;
+}
+
+.survey-table > thead > tr > th {
+  text-align: center;
 }

@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Radio, FormGroup } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 
 import LinkButton from '../../components/LinkButton';
+import SurveyRow from './SurveyRow';
 import FieldGroup from '../../components/AddUserModal/FieldGroup';
+
+import getAllCourses from '../../api/getAllCourses';
 
 import './index.css';
 
@@ -12,102 +15,93 @@ class TA_Survey extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      test: 'test',
-      answers: {
-        a: '',
-        b: '',
-        c: '',
-        xyz: 'x' // default value
-      }
+      answers: {},
+      courses: [],
+      isFetching: true
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.getValidationState = this.getValidationState.bind(this);
+  }
+
+  componentWillMount() {
+    getAllCourses()
+    .then(data => {
+      this.setState({
+        courses: data,
+        isFetching: false
+      });
+    })
+    .catch(error => {
+      this.setState({
+        courses: [],
+        isFetching: false
+      });
+    })
   }
 
   // Adapted from https://reactjs.org/docs/forms.html
-  handleInput(type, event) {
+  handleInput(course, event) {
     const answers = Object.assign({}, this.state.answers);
-    answers[type] = event.target.value;
+    answers[course] = event.target.value;
     this.setState({answers});
   }
 
   handleSubmit() {
     this.setState({
-      test: 'completed',
-      answers: {
-        a: '',
-        b: '',
-        c: '',
-        xyz: ''
-      }
+      answers: {}
     });
   }
 
-  getValidationState() {
-    const { answers } = this.state;
-    let valid = true;
-    for (let prop in answers) {
-      if (answers[prop] === '') {
-        valid = false;
-        break;
-      }
-    }
-    return (valid) ? 'success' : 'error';
-  }
-
   render() {
+    const options = [
+      'Very Interested',
+      'Some Interest',
+      'No Interest'
+    ];
+    const rows = this.state.courses.map(course => {
+      const courseSection = `${course.id}: ${course.sectionName}`;
+      return (
+        <SurveyRow
+          key={courseSection}
+          name={courseSection}
+          options={options}
+          onChange={e => this.handleInput(courseSection, e)}
+        />
+      );
+    })
+    // const rows = [];
+    // this.state.courses.forEach(course => {
+    //   course.sections.forEach(section => {
+    //     const courseSection = `${course.id}: ${section.sectionName}`
+    //     rows.push(
+    //       <SurveyRow
+    //         key={courseSection}
+    //         name={courseSection}
+    //         options={options}
+    //         onChange={e => this.handleInput(courseSection, e)}
+    //       />
+    //     );
+    //   })
+    // });
+
+    const optionHeaders = options.map(option => {
+      return <th key={option}>{option}</th>;
+    });
+
     return (
       <div>
         <form className="form-body">
-          <FieldGroup
-            id="formControlsA"
-            type="text"
-            label="A"
-            placeholder="Enter A"
-            onChange={e => this.handleInput('a', e)}
-            validationState={this.getValidationState}
-          />
-          <FieldGroup
-            id="formControlsB"
-            type="text"
-            label="B"
-            placeholder="Enter B"
-            onChange={e => this.handleInput('b', e)}
-            validationState={this.getValidationState}
-          />
-          <FieldGroup
-            id="formControlsC"
-            type="text"
-            label="C"
-            placeholder="Enter C"
-            onChange={e => this.handleInput('c', e)}
-            validationState={this.getValidationState}
-          />
-          <FormGroup>
-            <Radio
-              name="radioXYZ"
-              value="x"
-              onChange={e => this.handleInput('xyz', e)}
-              defaultChecked
-              inline>
-              X
-            </Radio>{' '}
-            <Radio
-              name="radioXYZ"
-              value="y"
-              onChange={e => this.handleInput('xyz', e)}
-              inline>
-              Y
-            </Radio>{' '}
-            <Radio
-              name="radioXYZ"
-              value="z"
-              onChange={e => this.handleInput('xyz', e)}
-              inline>
-              Z
-            </Radio>
-          </FormGroup>
+          <Table responsive className="survey-table">
+            <thead>
+              <tr>
+                <th>Course</th>
+                {optionHeaders}
+              </tr>
+            </thead>
+            <tbody>
+              {rows}
+            </tbody>
+          </Table>
         </form>
         <br/>
         <LinkButton to="/profile" btnText="Submit" bsStyle="primary" onClick={this.handleSubmit} />

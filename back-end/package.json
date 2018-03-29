@@ -1,0 +1,21 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "Back-end API to make queries to the database",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Zachary Polsky",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.3.2",
+    "hapi": "16.0.0",
+    "moment": "^2.21.0",
+    "mysql": "^2.15.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.2"
+  }
+}
