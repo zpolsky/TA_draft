@@ -10,7 +10,7 @@ server.connection(config);
 
 const normalizedPath = require('path').join(__dirname, 'routes');
 
-fs.readdirSync(normalizedPath).forEach(function(file) {
+fs.readdirSync(normalizedPath).forEach(file => {
   const route = require(`./routes/${file}`);
   server.route(route);
 });

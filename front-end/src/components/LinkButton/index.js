@@ -6,15 +6,11 @@ import { Link } from 'react-router-dom';
 
 const LinkButton = ({to, btnText, bsStyle, onClick}) => {
   const style = (bsStyle) ? bsStyle : "primary";
-  if (onClick) {
-    return <Link to={to}>
-      <Button bsStyle={style}>{btnText}</Button>
-    </Link>
-  } else {
-    return <Link to={to}>
+  return (
+    <Link to={to}>
       <Button bsStyle={style} onClick={onClick}>{btnText}</Button>
     </Link>
-  }
+  );
 }
 
 LinkButton.propTypes = {

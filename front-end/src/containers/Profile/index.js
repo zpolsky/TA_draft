@@ -97,7 +97,6 @@ class Profile extends Component {
             <LinkButton to="/ta-survey" btnText="Survey"/><br/>
           </React.Fragment>
         }
-        <Button bsStyle="primary" onClick={() => alert('Submit missing pressed')}>Submit Missing Form</Button><br/>
         <Button bsStyle="primary" onClick={() => this.modal.handleShow()}>Add TA</Button>
         {modal}
       </div>
