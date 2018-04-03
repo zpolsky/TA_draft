@@ -12,5 +12,5 @@ function postData(url, data) {
 }
 
 export default function(answers, username) {
-  return postData(`http://localhost:8080/submitSurvey/${username}`, answers);
+  return postData(`http://localhost:8080/submitDraft/${username}`, answers);
 }

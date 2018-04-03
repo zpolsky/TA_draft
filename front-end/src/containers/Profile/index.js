@@ -14,7 +14,8 @@ class Profile extends Component {
     this.state = {
       courses: [],
       isFetching: true,
-      surveyComplete: false
+      surveyComplete: false,
+      draftComplete: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -94,7 +95,15 @@ class Profile extends Component {
         {!this.state.surveyComplete &&
           // Fragment needed to return button with break
           <React.Fragment>
-            <LinkButton to="/ta-survey" btnText="Survey"/><br/>
+            <LinkButton to="/ta-survey" btnText="Survey"/>
+            <br/>
+          </React.Fragment>
+        }
+        {!this.state.draftComplete &&
+          // Fragment needed to return button with break
+          <React.Fragment>
+            <LinkButton to="/ta-draft" btnText="Draft TAs"/>
+            <br/>
           </React.Fragment>
         }
         <Button bsStyle="primary" onClick={() => this.modal.handleShow()}>Add TA</Button>

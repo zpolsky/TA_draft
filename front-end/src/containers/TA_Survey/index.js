@@ -41,9 +41,13 @@ class TA_Survey extends Component {
   }
 
   // Adapted from https://reactjs.org/docs/forms.html
-  handleInput(course, event) {
+  handleInput(event, courseSection, course) {
     const answers = Object.assign({}, this.state.answers);
-    answers[course] = event.target.value;
+    answers[courseSection] = {
+      course_id: course.cid,
+      section_id: course.sid,
+      preference: event.target.value,
+    };
     this.setState({answers});
   }
 
@@ -52,11 +56,15 @@ class TA_Survey extends Component {
       const courseSection = `${course.id}: ${course.sectionName}`;
       const courseSectionTime = `${course.id}: ${course.startTime} - ${course.endTime}`;
       if (!this.state.answers[courseSection] && !this.state.answers[courseSectionTime]) {
-        this.state.answers[courseSection] = 'No Interest';
+        this.state.answers[courseSection] = {
+          course_id: course.cid,
+          section_id: course.sid,
+          preference: 'No Interest',
+        }
       }
     });
     const answers = Object.assign({}, this.state.answers);
-    submitSurvey(answers);
+    submitSurvey(answers, this.props.username);
     this.setState({
       answers: {}
     });
@@ -88,7 +96,7 @@ class TA_Survey extends Component {
             key={courseSection}
             name={courseSection}
             options={options}
-            onChange={e => this.handleInput(courseSection, e)}
+            onChange={e => this.handleInput(e, courseSection, course)}
           />
         );
         concurrentSectionTimes.push(course.startTime);
@@ -98,7 +106,7 @@ class TA_Survey extends Component {
             key={course.id}
             name={course.id}
             options={options}
-            onChange={e => this.handleInput(course.id, e)}
+            onChange={e => this.handleInput(e, course.id, course)}
           />
         );
         singleSectionCourses.push(course.id);

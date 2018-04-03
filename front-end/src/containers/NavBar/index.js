@@ -8,6 +8,7 @@ import {
 import Login from '../Login';
 import Profile from '../Profile';
 import TA_Survey from '../TA_Survey';
+import TA_Draft from '../TA_Draft';
 import './index.css';
 
 class NavBar extends Component {
@@ -51,6 +52,9 @@ class NavBar extends Component {
           )}/>
           <Route path='/ta-survey' render={props => (
             <TA_Survey {...props} username={username} />
+          )}/>
+          <Route path='/ta-draft' render={props => (
+            <TA_Draft {...props} username={username} />
           )}/>
         </div>
       </Router>
