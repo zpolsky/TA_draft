@@ -31,12 +31,16 @@ const route = {
       });
       if (queryValues.length > 2) {
         queryValues = queryValues.substring(0, queryValues.length - 2);
-      } 
+      }
       const submitQuery = `INSERT INTO draft (uid, cid, sid, interest) VALUES ${queryValues}`;
       queryDatabase(submitQuery)
       .then(result => {
-        reply({
-          message: 'Success'
+        const updateQuery = `UPDATE users SET surveyCompleted = 1 WHERE uid = ${uid}`;
+        queryDatabase(updateQuery)
+        .then(success => {
+          reply({
+            message: 'Success'
+          });
         });
       });
     });

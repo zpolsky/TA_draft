@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 import './index.css';
 
 // Taken from https://serverless-stack.com/chapters/create-a-login-page.html
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
       password: ''
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   validateForm() {
@@ -18,26 +21,30 @@ export default class Login extends Component {
     return username.length > 0 && password.length > 0;
   }
 
-  handleChange = event => {
+  handleChange(event) {
     const { id, value } = event.target;
     this.setState({
       [id]: value
     });
-  };
+  }
 
-  handleSubmit = event => {
+  handleSubmit(event) {
     event.preventDefault();
-    console.log("this.props", this.props);
-    if (this.state.username === 'zach') {
-      this.props.store = this.state.username;
-    }
-  };
+    const { username, password } = this.state;
+    this.setState({
+      password: ''
+    });
+    this.props.handleSubmit(username, password);
+  }
 
   render() {
     const { username, password } = this.state;
+    if (this.props.isLoggedIn) {
+      return <Redirect to="/profile"/>;
+    }
     return (
       <div className="login">
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={e => this.handleSubmit(e)}>
           <FormGroup controlId="username" bsSize="large">
             <ControlLabel>Username</ControlLabel>
             <FormControl
@@ -63,7 +70,18 @@ export default class Login extends Component {
             Login
           </Button>
         </form>
+        {this.props.failedLogin &&
+          <h4 className="failed-login-msg">Failed Login Attempt</h4>
+        }
       </div>
     );
   }
 }
+
+Login.propTypes = {
+  isLoggedIn: PropTypes.bool.isRequired,
+  failedLogin: PropTypes.bool.isRequired,
+  handleSubmit: PropTypes.func.isRequired
+};
+
+export default Login;

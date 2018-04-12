@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import logo from '../../assets/washu-logo.png';
 
-import NavBar from '../../containers/NavBar';
+import RouterRoot from '../../containers/RouterRoot';
 
 class App extends Component {
   render() {
@@ -11,7 +11,7 @@ class App extends Component {
         <header className="App-header">
           <img src={logo} className="logo"/>
         </header>
-        <NavBar username="doug"/>
+        <RouterRoot/>
       </div>
     );
   }

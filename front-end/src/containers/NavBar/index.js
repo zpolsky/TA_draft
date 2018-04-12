@@ -1,65 +1,32 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import {
-  BrowserRouter as Router,
-  Route,
-} from 'react-router-dom'
-
-import Login from '../Login';
-import Profile from '../Profile';
-import TA_Survey from '../TA_Survey';
-import TA_Draft from '../TA_Draft';
+import { Link } from 'react-router-dom';
+import { LinkContainer } from 'react-router-bootstrap'
 import './index.css';
 
-class NavBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: this.props.username,
-    };
-  }
-
-  render() {
-    const { username } = this.state;
-
-    const myNav =
+const NavBar = () => {
+  return (
     <Navbar inverse collapseOnSelect>
       <Navbar.Header>
         <Navbar.Brand>
-          <a href="#">TA Portal</a>
+          <Link to="/">TA Draft</Link>
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar.Header>
       <Navbar.Collapse>
         <Nav>
-          <NavItem eventKey={1} href="/login">Login</NavItem>
-          <NavItem eventKey={2} href="/profile">Profile</NavItem>
+          <LinkContainer to="/profile">
+            <NavItem eventKey={1}>Profile</NavItem>
+          </LinkContainer>
+        </Nav>
+        <Nav pullRight>
+          <LinkContainer to="/">
+            <NavItem eventKey={2}>Sign Out</NavItem>
+          </LinkContainer>
         </Nav>
       </Navbar.Collapse>
-    </Navbar>;
-
-
-    return (
-      <Router>
-        <div>
-          {myNav}
-          <Route exact path='/' component={Login}/>
-          <Route path='/login' render={props => (
-            <Login {...props} />
-          )}/>
-          <Route path='/profile' render={props => (
-            <Profile {...props} username={username} />
-          )}/>
-          <Route path='/ta-survey' render={props => (
-            <TA_Survey {...props} username={username} />
-          )}/>
-          <Route path='/ta-draft' render={props => (
-            <TA_Draft {...props} username={username} />
-          )}/>
-        </div>
-      </Router>
-    );
-  }
+    </Navbar>
+  );
 }
 
 export default NavBar;

@@ -3,10 +3,11 @@ import { Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import './index.css';
 
-import getCourses from '../../api/getCourses';
-
 import LinkButton from '../../components/LinkButton';
 import AddUserModal from '../../components/AddUserModal';
+import { Redirect } from 'react-router-dom';
+
+import getCourses from '../../api/getCourses';
 
 class Profile extends Component {
   constructor(props) {
@@ -68,6 +69,10 @@ class Profile extends Component {
     const { username } = this.props;
     const { courses  } = this.state;
 
+    if (username === '') {
+      return <Redirect to="/login" />;
+    }
+
     // ref allows modal functions to be called (parent calls child functions)
     const modal = <AddUserModal
       ref={instance => { this.modal = instance; }}
@@ -87,6 +92,7 @@ class Profile extends Component {
         </div>
       );
     });
+
     return (
       <div className="center-div">
         <h1>Welcome {username}!</h1>

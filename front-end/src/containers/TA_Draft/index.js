@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { Button, Table, FormGroup, FormControl } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
 
 import LinkButton from '../../components/LinkButton';
 
@@ -16,7 +17,6 @@ class TA_Draft extends Component {
     super(props);
     this.state = {
       answers: {},
-      courses: [],
       students: [],
       isFetching: true
     };
@@ -24,44 +24,20 @@ class TA_Draft extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentWillMount() {
-    getCourses(this.props.username)
-    .then(courseData => {
+  componentDidMount() {
+    getDraftStudents(this.props.username)
+    .then(studentData => {
       this.setState({
-        courses: courseData,
-        isFetching: false
-      });
+        students: studentData
+      })
     })
     .catch(error => {
       this.setState({
-        courses: [],
         students: [],
         isFetching: false
       });
     })
   }
-
-  // componentWillMount() {
-  //   Promise.all([getCourses(this.props.username), getDraftStudents()])
-  //   .then(courseData => {
-  //     this.setState({
-  //       courses: courseData,
-  //       isFetching: false
-  //     });
-  //   })
-  //   .then(studentData => {
-  //     this.setState({
-  //       students: studentData
-  //     })
-  //   })
-  //   .catch(error => {
-  //     this.setState({
-  //       courses: [],
-  //       students: [],
-  //       isFetching: false
-  //     });
-  //   })
-  // }
 
   // Adapted from https://reactjs.org/docs/forms.html
   handleInput(event, id) {
@@ -79,13 +55,41 @@ class TA_Draft extends Component {
   }
 
   render() {
-    const students = ['Billy', 'Fred', 'Tonya'];
+    if (!this.props.username) {
+      return <Redirect to="/"/>;
+    }
 
-    const tables = this.state.courses.map(course => {
-      const rows = students.map(student => {
-        const id = `checkBox${course.id}${student}`;
-        return <tr key={student}>
-          <td>{student}</td>
+    const courses = [];
+    const sectionIds = [];
+    this.state.students.forEach(student => {
+      const course = {
+        cid: student.cid,
+        sid: student.sid,
+        courseNumber: student.courseNumber,
+        sectionName: student.sectionName,
+        time: student.time,
+        students: []
+      };
+      if (!sectionIds.includes(course.sid)) {
+        courses.push(course);
+        sectionIds.push(course.sid);
+      }
+    });
+
+    courses.forEach(course => {
+      this.state.students.forEach(student => {
+        if (course.sid === student.sid) {
+          course.students.push(student);
+        }
+      });
+    });
+
+    const tables = courses.map(course => {
+      const rows = course.students.map(student => {
+        const id = `checkBox${course.cid}:${course.sid}:${student.wustl_key}`;
+        return <tr key={id}>
+          <td>{`${student.first_name} ${student.last_name}`}</td>
+          <td>{student.interest}</td>
           <td>
             <input
               type="checkbox"
@@ -96,13 +100,14 @@ class TA_Draft extends Component {
         </tr>
       });
       return (
-        <React.Fragment key={course}>
+        <React.Fragment key={`${course.cid}${course.sid}`}>
           <form className="form-body">
-            <span>{course.id}</span>
+            <span>{`${course.courseNumber} ${course.sectionName}`}</span>
             <Table responsive className="survey-table">
               <thead>
                 <tr>
                   <th>Student</th>
+                  <th>Interest</th>
                   <th>Drafted</th>
                 </tr>
               </thead>
