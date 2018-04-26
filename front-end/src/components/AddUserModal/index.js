@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 
 import FieldGroup from './FieldGroup';
 
+// Modal to allow professors or admins to add new users to the database
+//  (can be accessed on the Profile page)
 class AddUserModal extends Component {
   constructor(props) {
     super(props);

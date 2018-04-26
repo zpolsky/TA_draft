@@ -12,6 +12,7 @@ import submitDraft from '../../api/submitDraft';
 
 import './index.css';
 
+// Display for professor selecting TAs for their classes
 class TA_Draft extends Component {
   constructor(props) {
     super(props);
@@ -48,14 +49,15 @@ class TA_Draft extends Component {
 
   handleSubmit() {
     const answers = Object.assign({}, this.state.answers);
-    //submitDraft(answers);
+    submitDraft(answers);
     this.setState({
       answers: {}
     });
   }
 
   render() {
-    if (!this.props.username) {
+    // Redirect to login if user is not logged in
+    if (!this.props.user.username) {
       return <Redirect to="/"/>;
     }
 
@@ -131,7 +133,13 @@ class TA_Draft extends Component {
 }
 
 TA_Draft.propTypes = {
-  username: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    username: PropTypes.string,
+    uid: PropTypes.number,
+    isActive: PropTypes.bool,
+    surveyCompleted: PropTypes.bool,
+    role: PropTypes.number
+  }).isRequired,
 };
 
 export default TA_Draft;

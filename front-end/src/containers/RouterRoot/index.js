@@ -12,6 +12,7 @@ import NavBar from '../NavBar';
 
 import checkLogin from '../../api/checkLogin';
 
+// Controls navigation throughout the app
 class RouterRoot extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +25,7 @@ class RouterRoot extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  // called when submit is pressed in login component
+  // called when submit is pressed in login component (sends login attempt to API)
   handleSubmit(username, password) {
     checkLogin(username, password)
     .then(response => {

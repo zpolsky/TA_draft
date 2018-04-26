@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import './index.css';
 
-// Taken from https://serverless-stack.com/chapters/create-a-login-page.html
+// Adapted from https://serverless-stack.com/chapters/create-a-login-page.html
 class Login extends Component {
   constructor(props) {
     super(props);

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
+// Button to navigate between pages within the application
 const LinkButton = ({to, btnText, bsStyle, onClick}) => {
   const style = (bsStyle) ? bsStyle : "primary";
   return (

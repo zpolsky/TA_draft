@@ -9,6 +9,10 @@ import { Redirect } from 'react-router-dom';
 
 import getCourses from '../../api/getCourses';
 
+// Main landing page after a user successfully logs in that gives students
+//  access to the survey to submits what courses they want to TA and gives
+//  professors/admins the ability to add TAs to the system or draft students
+//  that have submitted the survey
 class Profile extends Component {
   constructor(props) {
     super(props);
@@ -115,6 +119,7 @@ class Profile extends Component {
         }
         {
           this.props.user.role !== 0 &&
+          // Fragment needed to return button with modal
           <React.Fragment>
             <Button bsStyle="primary" onClick={() => this.modal.handleShow()}>Add TA</Button>
             {modal}

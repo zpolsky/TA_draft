@@ -1,3 +1,4 @@
+// Returns an array of courses where the given username belongs to
 export default function(username) {
   return new Promise((resolve, reject) => {
     fetch(`http://localhost:8080/getCourses/${username}`)

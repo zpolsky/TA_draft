@@ -26,6 +26,7 @@ const SurveyRow = ({name, currentValue, options, onChange, ...props}) => {
 
 SurveyRow.propTypes = {
   name: PropTypes.string.isRequired,
+  currentValue: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired
 };

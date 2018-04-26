@@ -11,6 +11,8 @@ function postData(url, data) {
   .then(response => console.log('Success: ', response));
 }
 
+// Inserts a student's survey answers into the draft table in the database so
+//  they can be drafted later on by a professor or admin
 export default function(answers, username) {
   return postData(`http://localhost:8080/submitSurvey/${username}`, answers);
 }

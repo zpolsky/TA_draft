@@ -11,6 +11,8 @@ function postData(url, data) {
   .then(response => console.log('Success: ', response));
 }
 
+// Inserts a professor's TA selections into the database to map those students
+//  to the appropriate courses
 export default function(answers, username) {
   return postData(`http://localhost:8080/submitDraft/${username}`, answers);
 }

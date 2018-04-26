@@ -26,48 +26,48 @@ class TA_Survey extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentWillMount() {
-    getAllCourses()
-    .then(data => {
-      this.setState({
-        courses: data,
-      });
-      if (this.props.user.surveyCompleted) {
-        getSurveyAnswers(this.props.user.uid)
-        .then(origAnswers => {
-          origAnswers.forEach(answer => {
-            const courseSection = `${answer.course_number}`;
-            const answers = Object.assign({}, this.state.answers);
-            answers[courseSection] = {
-              course_id: answer.cid,
-              section_id: answer.sid,
-              preference: answer.interest,
-            };
-            this.setState({answers});
-          });
-          this.setState({
-            isFetching: false
-          });
-        })
-        .catch(error => {
-          this.setState({
-            courses: [],
-            isFetching: false
-          })
-        })
-      } else {
-        this.setState({
-          isFetching: false
-        });
-      }
-    })
-    .catch(error => {
-      this.setState({
-        courses: [],
-        isFetching: false
-      });
-    })
-  }
+  // componentWillMount() {
+  //   getAllCourses()
+  //   .then(data => {
+  //     this.setState({
+  //       courses: data,
+  //     });
+  //     if (this.props.user.surveyCompleted) {
+  //       getSurveyAnswers(this.props.user.uid)
+  //       .then(origAnswers => {
+  //         origAnswers.forEach(answer => {
+  //           const courseSection = `${answer.course_number}`;
+  //           const answers = Object.assign({}, this.state.answers);
+  //           answers[courseSection] = {
+  //             course_id: answer.cid,
+  //             section_id: answer.sid,
+  //             preference: answer.interest,
+  //           };
+  //           this.setState({answers});
+  //         });
+  //         this.setState({
+  //           isFetching: false
+  //         });
+  //       })
+  //       .catch(error => {
+  //         this.setState({
+  //           courses: [],
+  //           isFetching: false
+  //         })
+  //       })
+  //     } else {
+  //       this.setState({
+  //         isFetching: false
+  //       });
+  //     }
+  //   })
+  //   .catch(error => {
+  //     this.setState({
+  //       courses: [],
+  //       isFetching: false
+  //     });
+  //   })
+  // }
   // Adapted from https://reactjs.org/docs/forms.html
   handleInput(event, courseSection, course) {
     const answers = Object.assign({}, this.state.answers);
@@ -80,17 +80,6 @@ class TA_Survey extends Component {
   }
 
   handleSubmit() {
-    // this.state.courses.forEach(course => {
-    //   const courseSection = `${course.id}: ${course.sectionName}`;
-    //   const courseSectionTime = `${course.id}: ${course.startTime} - ${course.endTime}`;
-    //   if (!this.state.answers[courseSection] && !this.state.answers[courseSectionTime]) {
-    //     this.state.answers[courseSection] = {
-    //       course_id: course.cid,
-    //       section_id: course.sid,
-    //       preference: 'No Interest',
-    //     }
-    //   }
-    // });
     const answers = Object.assign({}, this.state.answers);
     submitSurvey(answers, this.props.user.username);
     this.setState({
@@ -122,8 +111,6 @@ class TA_Survey extends Component {
     this.state.courses.forEach(course => {
       const answerId = `${course.id}`;
       const currentValue = (this.state.answers[answerId]) ? this.state.answers[answerId].preference : 'No Interest';
-      console.log(`this.state.answers[${answerId}] = `, this.state.answers[answerId]);
-      console.log('currentValue = ', currentValue);
       if (mulipleSectionCourses.includes(course.id) && !concurrentSectionTimes.includes(course.startTime)) {
         const courseSection = `${course.id}: ${course.startTime} - ${course.endTime}`;
         rows.push(
