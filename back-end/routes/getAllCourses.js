@@ -28,7 +28,7 @@ const route = {
     .then(result => {
       const courses = result.map(course => {
         return {
-          cid: course.cid, 
+          cid: course.cid,
           id: course.course_number,
           courseName: course.name,
           sid: course.sid,
@@ -39,33 +39,6 @@ const route = {
       });
       reply(courses);
     })
-    // Combine courses of same section into one object
-    // .then(result => {
-    //   const courses = [];
-    //   result.forEach(course => {
-    //     if (!containsCourse(courses, course)) {
-    //       courses.push({
-    //         id: course.course_number,
-    //         courseName: course.name,
-    //         sections: []
-    //       });
-    //     }
-    //   });
-    //   result.forEach(course => {
-    //     courses.forEach(courseInfo => {
-    //       if (course.course_number === courseInfo.id) {
-    //         const startTime = moment(course.start_time).format('h:mm A');
-    //         const endTime = moment(course.end_time).format('h:mm A');
-    //         courseInfo.sections.push({
-    //           sectionId: course.sid,
-    //           sectionName: course.section_name,
-    //           time: `${startTime} - ${endTime}`
-    //         });
-    //       }
-    //     });
-    //   });
-    //   reply(courses);
-    // })
     .catch(err => {
       console.log(chalk.red(`Err: ${err}`));
     });

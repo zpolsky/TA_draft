@@ -16,8 +16,7 @@ class RouterRoot extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // user: {},
-      username: '',
+      user: {},
       isLoggedIn: false,
       failedLogin: false,
 
@@ -29,14 +28,15 @@ class RouterRoot extends Component {
   handleSubmit(username, password) {
     checkLogin(username, password)
     .then(response => {
+      const { uid, isActive, surveyCompleted, role } = response;
       this.setState({
-        username,
-        // user: {
-        //   username,
-        //   uid: response.uid,
-        //   isActive: response.isActive,
-        //   surveyCompleted: response.surveyCompleted
-        // },
+        user: {
+          username,
+          uid,
+          isActive,
+          surveyCompleted,
+          role
+        },
         isLoggedIn: response.success,
         failedLogin: !response.success
       });
@@ -44,8 +44,8 @@ class RouterRoot extends Component {
   }
 
   render() {
-    const { username, isLoggedIn, failedLogin } = this.state;
-    // const { username } = user;
+    const { user, isLoggedIn, failedLogin } = this.state;
+    const { username } = user;
     return (
       <Router>
         <div>
@@ -59,10 +59,10 @@ class RouterRoot extends Component {
             <Login {...props} isLoggedIn={isLoggedIn} failedLogin={failedLogin} handleSubmit={this.handleSubmit} />
           )}/>
           <Route path='/profile' render={props => (
-            <Profile {...props} username={username} />
+            <Profile {...props} user={user} />
           )}/>
           <Route path='/ta-survey' render={props => (
-            <TA_Survey {...props} username={username} />
+            <TA_Survey {...props} user={user} />
           )}/>
           <Route path='/ta-draft' render={props => (
             <TA_Draft {...props} username={username} />

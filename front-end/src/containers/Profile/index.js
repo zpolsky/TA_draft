@@ -15,14 +15,14 @@ class Profile extends Component {
     this.state = {
       courses: [],
       isFetching: true,
-      surveyComplete: false,
       draftComplete: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+
   componentWillMount() {
-    getCourses(this.props.username)
+    getCourses(this.props.user.username)
     .then(data => {
       const courses = [
         {
@@ -58,7 +58,7 @@ class Profile extends Component {
         courses: [],
         isFetching: false
       });
-    })
+    });
   }
 
   handleSubmit(userData) {
@@ -66,10 +66,10 @@ class Profile extends Component {
   }
 
   render() {
-    const { username } = this.props;
+    const { username } = this.props.user;
     const { courses  } = this.state;
 
-    if (username === '') {
+    if (!username) {
       return <Redirect to="/login" />;
     }
 
@@ -98,29 +98,41 @@ class Profile extends Component {
         <h1>Welcome {username}!</h1>
         <h3>Classes:</h3>
         {courseList}
-        {!this.state.surveyComplete &&
+        {this.props.user.role === 0 &&
           // Fragment needed to return button with break
           <React.Fragment>
-            <LinkButton to="/ta-survey" btnText="Survey"/>
+            <LinkButton to="/ta-survey" btnText={(this.props.user.surveyCompleted) ? 'Update Survey' : 'Take Survey'}/>
             <br/>
           </React.Fragment>
         }
-        {!this.state.draftComplete &&
+
+        {this.props.user.role !== 0 && !this.state.draftComplete &&
           // Fragment needed to return button with break
           <React.Fragment>
             <LinkButton to="/ta-draft" btnText="Draft TAs"/>
             <br/>
           </React.Fragment>
         }
-        <Button bsStyle="primary" onClick={() => this.modal.handleShow()}>Add TA</Button>
-        {modal}
+        {
+          this.props.user.role !== 0 &&
+          <React.Fragment>
+            <Button bsStyle="primary" onClick={() => this.modal.handleShow()}>Add TA</Button>
+            {modal}
+          </React.Fragment>
+        }
       </div>
     );
   }
 }
 
 Profile.propTypes = {
-  username: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    username: PropTypes.string,
+    uid: PropTypes.number,
+    isActive: PropTypes.bool,
+    surveyCompleted: PropTypes.bool,
+    role: PropTypes.number
+  }).isRequired,
 };
 
 export default Profile;

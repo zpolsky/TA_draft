@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { Button, Table } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
 
 import LinkButton from '../../components/LinkButton';
 import SurveyRow from './SurveyRow';
@@ -9,6 +10,7 @@ import FieldGroup from '../../components/AddUserModal/FieldGroup';
 
 import getAllCourses from '../../api/getAllCourses';
 import submitSurvey from '../../api/submitSurvey';
+import getSurveyAnswers from '../../api/getSurveyAnswers';
 
 import './index.css';
 
@@ -29,8 +31,35 @@ class TA_Survey extends Component {
     .then(data => {
       this.setState({
         courses: data,
-        isFetching: false
       });
+      if (this.props.user.surveyCompleted) {
+        getSurveyAnswers(this.props.user.uid)
+        .then(origAnswers => {
+          origAnswers.forEach(answer => {
+            const courseSection = `${answer.course_number}`;
+            const answers = Object.assign({}, this.state.answers);
+            answers[courseSection] = {
+              course_id: answer.cid,
+              section_id: answer.sid,
+              preference: answer.interest,
+            };
+            this.setState({answers});
+          });
+          this.setState({
+            isFetching: false
+          });
+        })
+        .catch(error => {
+          this.setState({
+            courses: [],
+            isFetching: false
+          })
+        })
+      } else {
+        this.setState({
+          isFetching: false
+        });
+      }
     })
     .catch(error => {
       this.setState({
@@ -39,7 +68,6 @@ class TA_Survey extends Component {
       });
     })
   }
-
   // Adapted from https://reactjs.org/docs/forms.html
   handleInput(event, courseSection, course) {
     const answers = Object.assign({}, this.state.answers);
@@ -52,25 +80,28 @@ class TA_Survey extends Component {
   }
 
   handleSubmit() {
-    this.state.courses.forEach(course => {
-      const courseSection = `${course.id}: ${course.sectionName}`;
-      const courseSectionTime = `${course.id}: ${course.startTime} - ${course.endTime}`;
-      if (!this.state.answers[courseSection] && !this.state.answers[courseSectionTime]) {
-        this.state.answers[courseSection] = {
-          course_id: course.cid,
-          section_id: course.sid,
-          preference: 'No Interest',
-        }
-      }
-    });
+    // this.state.courses.forEach(course => {
+    //   const courseSection = `${course.id}: ${course.sectionName}`;
+    //   const courseSectionTime = `${course.id}: ${course.startTime} - ${course.endTime}`;
+    //   if (!this.state.answers[courseSection] && !this.state.answers[courseSectionTime]) {
+    //     this.state.answers[courseSection] = {
+    //       course_id: course.cid,
+    //       section_id: course.sid,
+    //       preference: 'No Interest',
+    //     }
+    //   }
+    // });
     const answers = Object.assign({}, this.state.answers);
-    submitSurvey(answers, this.props.username);
+    submitSurvey(answers, this.props.user.username);
     this.setState({
       answers: {}
     });
   }
 
   render() {
+    if (!this.props.user.username) {
+      return <Redirect to="/" />
+    }
     const options = [
       'Very Interested and have TA\'d before',
       'Very Interested and have not TA\'d before',
@@ -89,11 +120,16 @@ class TA_Survey extends Component {
     //  only appear once)
     // Otherwise, course should be listed once and not appear multiple times, regardless of number of sections
     this.state.courses.forEach(course => {
+      const answerId = `${course.id}`;
+      const currentValue = (this.state.answers[answerId]) ? this.state.answers[answerId].preference : 'No Interest';
+      console.log(`this.state.answers[${answerId}] = `, this.state.answers[answerId]);
+      console.log('currentValue = ', currentValue);
       if (mulipleSectionCourses.includes(course.id) && !concurrentSectionTimes.includes(course.startTime)) {
         const courseSection = `${course.id}: ${course.startTime} - ${course.endTime}`;
         rows.push(
           <SurveyRow
             key={courseSection}
+            currentValue={currentValue}
             name={courseSection}
             options={options}
             onChange={e => this.handleInput(e, courseSection, course)}
@@ -104,6 +140,7 @@ class TA_Survey extends Component {
         rows.push(
           <SurveyRow
             key={course.id}
+            currentValue={currentValue}
             name={course.id}
             options={options}
             onChange={e => this.handleInput(e, course.id, course)}
@@ -140,7 +177,13 @@ class TA_Survey extends Component {
 }
 
 TA_Survey.propTypes = {
-  username: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    username: PropTypes.string,
+    uid: PropTypes.number,
+    isActive: PropTypes.bool,
+    surveyCompleted: PropTypes.bool,
+    role: PropTypes.number
+  }).isRequired,
 };
 
 export default TA_Survey;

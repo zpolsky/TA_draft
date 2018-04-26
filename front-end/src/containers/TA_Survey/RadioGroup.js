@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 
 import { Radio } from 'react-bootstrap';
 
-const RadioGroup = ({name, value, onChange, ...props}) => {
+const RadioGroup = ({name, currentValue, value, onChange, ...props}) => {
   return (
     <Radio
       name={"radio" + name}
       value={value}
       onChange={onChange}
-      defaultChecked={value === "No Interest"}>
+      defaultChecked={currentValue === value}>
     </Radio>
   );
 }

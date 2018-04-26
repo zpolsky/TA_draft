@@ -2,6 +2,7 @@
 const chalk = require('chalk');
 const queryDatabase = require('../dbConnection');
 
+
 const route = {
   method: 'GET',
   path: '/checkLogin/u={username}_p={password}',
@@ -9,20 +10,28 @@ const route = {
     const username = encodeURIComponent(request.params.username);
     const password = encodeURIComponent(request.params.password);
     const loginQuery =
-    `SELECT COUNT(*), surveyCompleted, isActive, uid
+    `SELECT surveyCompleted, isActive, uid, role
     FROM users
     WHERE wustl_key = '${username}' AND password = '${password}'`;
     queryDatabase(loginQuery)
     .then(result => {
-      const num = result[0]['COUNT(*)'];
-      const success = (num === 1);
-      reply({
-        success,
-        username,
-        // uid: result[0].uid,
-        // surveyCompleted: result[0].surveyCompleted,
-        // isActive: result[0].isActive
-      });
+      const success = (result.length === 1);
+      if (success) {
+        const user = result[0];
+        reply({
+          success,
+          username,
+          uid: user.uid,
+          surveyCompleted: user.surveyCompleted === 1,
+          isActive: user.isActive === 1,
+          role: user.role
+        });
+      } else {
+        reply({
+          success,
+          username
+        });
+      }
     })
     .catch(err => {
       console.log(chalk.red(`Err: ${err}`));

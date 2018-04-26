@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import RadioGroup from './RadioGroup';
 
-const SurveyRow = ({name, options, onChange, ...props}) => {
+const SurveyRow = ({name, currentValue, options, onChange, ...props}) => {
   const radioButtons = options.map(option => {
     return (
       <td key={name + option}>
         <RadioGroup
           name={name}
+          currentValue={currentValue}
           value={option}
           onChange={onChange}
         />
